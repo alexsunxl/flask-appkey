@@ -110,45 +110,45 @@ def cgi():
 
 
   # 检验token
-  if token == Auth.genToken(access_key, secret_key, data) :
-    one_minute_ago = datetime.now() - timedelta(minutes=1)
-    record = db.key_record.find_one({'token': token, 'created_at': {'$gte': one_minute_ago}})
+  if token != Auth.genToken(access_key, secret_key, data) :
+    return 'fail, 认证失败'
 
-    # 限制调用时间
-    limit_minutes = 5
-    # 限制调用次数
-    limit_time = 10
-    # 某个用户在一段时间内的调用次数
-    minutes_ago = datetime.now() - timedelta(minutes=limit_minutes)
-    records = db.key_record.find({
+  one_minute_ago = datetime.now() - timedelta(minutes=1)
+  record = db.key_record.find_one({'token': token, 'created_at': {'$gte': one_minute_ago}})
+
+  # 限制调用时间
+  limit_minutes = 5
+  # 限制调用次数
+  limit_time = 10
+  # 某个用户在一段时间内的调用次数
+  minutes_ago = datetime.now() - timedelta(minutes=limit_minutes)
+  records = db.key_record.find({
+    'access_key': access_key,
+    'created_at': {'$gte': minutes_ago}
+  })
+
+  if records.count() >= limit_time : 
+    return 'fail, 调用次数过多，请稍后再试' 
+
+  # 调用成功并插入调用记录
+  if not bool(record) :
+    db.user_key.update_one(
+      {'access_key': access_key},
+      {
+        '$inc': {
+          'time': 1
+        }
+      }, upsert=False
+    )
+    db.key_record.insert_one({
       'access_key': access_key,
-      'created_at': {'$gte': minutes_ago}
+      'token': token,
+      'created_at': datetime.now(),
+      'data': json.dumps(data),
     })
-
-    if records.count() >= limit_time : 
-      return '调用次数过多，请稍后再试' 
-
-    # 调用成功并插入调用记录
-    if not bool(record) :
-      db.user_key.update_one(
-        {'access_key': access_key},
-        {
-          '$inc': {
-            'time': 1
-          }
-        }, upsert=False
-      )
-      db.key_record.insert_one({
-        'access_key': access_key,
-        'token': token,
-        'created_at': datetime.now(),
-        'data': json.dumps(data),
-      })
-      return 'call sucess'
-    else :
-      return 'fail，调用参数重复，请一分钟后再试'
-
-  return access_key
+    return 'sucess'
+  else :
+    return 'fail, 调用参数重复，请一分钟后再试'
 
 @app.route('/records')
 def recodes():
