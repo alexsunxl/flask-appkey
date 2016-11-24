@@ -1,12 +1,13 @@
 
 ## requirement
-docker 
-docker-compose
+
+* docker 
+* docker-compose
 
 ## 开发环境 
-macos 10.12.1
-docker 1.12.3
-docker-compose version 1.8.1
+* macos 10.12.1
+* docker 1.12.3
+* docker-compose version 1.8.1
 
 
 ## 启动
