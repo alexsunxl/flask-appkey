@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>APP KEY</title>
+	<style type="text/css">
+	
+	.call-form {
+		margin: 30px;
+	}
+</style>
+</head>
+<body>
+
+
+<div>
+	<h3>{{data.name}}的app key面板</h3>
+	<div>
+		<label>AccessKey：</label>
+		<span>{{data.access_key}}</span>
+	</div>
+
+	<div>
+		<label>SecretKey：</label>
+		<span>{{data.secret_key}}</span>
+	</div>
+
+	<div>
+		<label>接口调用次数：</label>
+		<span>{{data.time}}</span>
+	</div>
+
+	<div>
+		<label>创建日期：</label>
+		<span>{{data.created_at}}</span>
+	</div>
+
+	<div>
+		<label>修改日期：</label>
+		<span>{{data.updated_at}}</span>
+	</div>
+</div>
+
+<form class="call-form" method="get" action="/apply">
+	<input type="hidden" name="name" value="{{data.name}}">
+
+	<label>调用参数：</label>
+	<input type="text" name="params" >
+
+	<button type="submit">调用接口</button> 
+</form>
+
+</body>
+</html>

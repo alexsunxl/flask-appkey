@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>调用记录</title>
+
+	<style type="text/css">
+		td {
+			padding: 10px;
+		    border: 1px solid #eee;	
+		}
+		p {
+			width: 280px;
+			word-wrap:break-word;
+		}
+	</style>
+</head>
+<body>
+
+	<table>
+		<thead>
+			<tr>
+				<td>access_key</td>
+				<td>token</td>
+				<td>调用参数</td>
+				<td>调用时间</td>
+			</tr>
+		</thead>
+		<tbody>
+			{% for item in records  %}
+				<tr>
+					<td><p>{{item.access_key}}</p></td>
+					<td><p>{{item.token}}</p></td>
+					<td>{{item.data}}</td>
+					<td>{{item.created_at}}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+</body>
+</html>
